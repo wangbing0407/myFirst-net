@@ -8,6 +8,8 @@
         <el-tab-pane label="Vue数据监测" name="pageD"></el-tab-pane>
         <el-tab-pane label="Vue自定义指令" name="pageE"></el-tab-pane>
         <el-tab-pane label="Vue自定义事件" name="pageF"></el-tab-pane>
+        <el-tab-pane label="Vue生命周期" name="pageG"></el-tab-pane>
+        <el-tab-pane label="Vue过渡与动画" name="pageH"></el-tab-pane>
         <h2>{{name}}</h2>
         <keep-alive>
           <component ref="components" :is='pages' @handleSetVal="getEventVal" :changeMsg="setMsg"></component>
@@ -25,6 +27,8 @@ import pageC from './page/ConditionRender.vue'
 import pageD from './page/DataObserver.vue'
 import pageE from './page/CustomInstructions.vue'
 import pageF from './page/CustomEvents.vue'
+import pageG from './page/LifeCycle.vue'
+import pageH from './page/Animation.vue'
 
 export default {
   name: 'index',
@@ -37,7 +41,9 @@ export default {
     pageC,
     pageD,
     pageE,
-    pageF
+    pageF,
+    pageG,
+    pageH
   },
   data(){
     return {
