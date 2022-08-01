@@ -10,14 +10,24 @@
       <h1 v-show="isShow" key="1">你好啊！</h1>
       <h1 v-show="!isShow" key="2">何毛宁！</h1>
     </transition-group>
+    <el-button type="primary" size="mini" @click="getData">获取信息</el-button>
   </div>
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   data(){
     return {
       isShow: true
+    }
+  },
+  methods: {
+    getData() {
+      axios.get('http://localhost:8080/wang/students').then(res =>{
+        console.log(res.data)
+      })
     }
   }
 }
