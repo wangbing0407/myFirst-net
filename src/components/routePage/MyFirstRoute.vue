@@ -4,6 +4,7 @@
     <el-tabs type="border-card" v-model="activeName" @tab-click="handleClick">
       <el-tab-pane label="跳转1" name="1">111</el-tab-pane>
       <el-tab-pane label="跳转2" name="2">222</el-tab-pane>
+      <div>11</div>
     </el-tabs>
     <keep-alive>
       <router-view />
