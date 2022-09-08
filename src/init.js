@@ -32,7 +32,6 @@ export function initMixin(Vue) {
         const render = compileToFunction(template)
         opts.render = render  // jsx最终会被编译成h('xxx')
       }
-      console.log(template)
     }
     opts.render
 
