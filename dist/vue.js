@@ -187,6 +187,58 @@
     }
   }
 
+  var attribute = /^\s*([^\s"'<>\/=]+)(?:\s*(=)\s*(?:"([^"]*)"+|'([^']*)'+|([^\s"'=<>`]+)))?/;
+  var ncname = "[a-zA-Z_][\\-\\.0-9_a-zA-Z]*";
+  var qnameCapture = "((?:".concat(ncname, "\\:)?").concat(ncname, ")");
+  var startTagOpen = new RegExp("^<".concat(qnameCapture));
+  var startTagClose = /^\s*(\/?)>/;
+
+  function parseHTML(html) {
+    function advance(n) {
+      html = html.substring(n);
+    }
+
+    function parseStartTag() {
+      var start = html.match(startTagOpen);
+
+      if (start) {
+        ({
+          tagName: start[1],
+          // 标签名
+          attrs: []
+        });
+        advance(start[0].length); // console.log(match)
+      } // 如果不是开始标签的结束，就一直匹配下去
+
+
+      var attr;
+
+      while (!html.match(startTagClose) && (attr = html.match(attribute))) {
+        advance(attr[0].length);
+      }
+
+      console.log(html);
+      return false; // 不是开始标签
+      // console.log(start);
+    }
+
+    while (html) {
+      var textEnd = html.indexOf('<');
+
+      if (textEnd === 0) {
+        parseStartTag();
+        break;
+      }
+    }
+  }
+
+  function compileToFunction(template) {
+    // 1.就是将template转换成ast语法树
+    // 2.生成render方法（render方法执行后的返回就是虚拟dom）
+    // console.log(template)
+    parseHTML(template);
+  }
+
   function initMixin(Vue) {
     Vue.prototype._init = function (options) {
       var vm = this; // vm.$options 就是获取用户的配置
@@ -194,6 +246,43 @@
       vm.$options = options; // 将用户的选项挂载到实例上
 
       initState(vm);
+
+      if (options.el) {
+        vm.$mount(options.el);
+      }
+    };
+
+    Vue.prototype.$mount = function (el) {
+      var vm = this;
+      el = document.querySelector(el);
+      var opts = vm.$options;
+
+      if (!opts.render) {
+        // 先进行查找有没有render函数
+        var template; // 没有render看一下是否写了template，
+        // 没有写模板，但是写了el
+
+        if (!opts.template && el) {
+          template = el.outerHTML;
+        } else {
+          if (el) {
+            // 如果有el，就采用模板的内容
+            template = opts.template;
+          }
+        }
+
+        if (template) {
+          // 这里需要对模板进行编译
+          var render = compileToFunction(template);
+          opts.render = render; // jsx最终会被编译成h('xxx')
+        }
+
+        console.log(template);
+      }
+
+      opts.render; // script标签引用的vue.global.js这个编译过程是在浏览器运行的
+      // runtime是不包括模板编译的，整个编译是打包的时候通过loader来转移.vue文件的
+      // 用runtime的时候不能使用template
     };
   }
 

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vue2源码调试</title>
+</head>
+<body>
+    <div id="app">
+        <div>
+            <span>姓名：{{name}}</span>
+            <span>年龄：{{age}}</span>
+        </div>
+    </div>
+    <script src="./vue.js"></script>
+
+    <script>
+        const vm = new Vue({
+            // el: '#app',
+            template: '<div>hello</div>',
+            data: {
+                name: 'wang',
+                age: 18,
+                obj: {
+                    a: 1
+                }
+            }
+        })
+        vm.$mount('#app')
+        console.log(vm)
+
+        // 1.模板引擎  性能差、需要进行正则匹配替换，vue1.0的时候还没有引入虚拟dom的概念
+        // 2.vue2采用虚拟DOM，数据变化后比较虚拟dom的差异，最后更新需要更新的地方
+        // 3.核心就行要将模板变为js语法，通过js语法生成虚拟dom
+    </script>
+</body>
+</html>
