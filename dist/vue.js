@@ -35,6 +35,52 @@
     });
     return Constructor;
   }
+  function _slicedToArray(arr, i) {
+    return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();
+  }
+  function _arrayWithHoles(arr) {
+    if (Array.isArray(arr)) return arr;
+  }
+  function _iterableToArrayLimit(arr, i) {
+    var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"];
+    if (_i == null) return;
+    var _arr = [];
+    var _n = true;
+    var _d = false;
+    var _s, _e;
+    try {
+      for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) {
+        _arr.push(_s.value);
+        if (i && _arr.length === i) break;
+      }
+    } catch (err) {
+      _d = true;
+      _e = err;
+    } finally {
+      try {
+        if (!_n && _i["return"] != null) _i["return"]();
+      } finally {
+        if (_d) throw _e;
+      }
+    }
+    return _arr;
+  }
+  function _unsupportedIterableToArray(o, minLen) {
+    if (!o) return;
+    if (typeof o === "string") return _arrayLikeToArray(o, minLen);
+    var n = Object.prototype.toString.call(o).slice(8, -1);
+    if (n === "Object" && o.constructor) n = o.constructor.name;
+    if (n === "Map" || n === "Set") return Array.from(o);
+    if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
+  }
+  function _arrayLikeToArray(arr, len) {
+    if (len == null || len > arr.length) len = arr.length;
+    for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
+    return arr2;
+  }
+  function _nonIterableRest() {
+    throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+  }
 
   var oldArrayProto = Array.prototype;
   var newArrayProto = Object.create(oldArrayProto);
@@ -285,13 +331,105 @@
       }
     }
 
-    console.log(root);
+    return root;
+  }
+
+  function genProps(attrs) {
+    var str = '';
+    for (var i = 0; i < attrs.length; i++) {
+      var attr = attrs[i];
+      if (attr.name === 'style') {
+        (function () {
+          attr.value.split(';').forEach(function (item) {
+            var _item$split = item.split(':'),
+              _item$split2 = _slicedToArray(_item$split, 2);
+              _item$split2[0];
+              _item$split2[1];
+          });
+        })();
+      }
+      str += "".concat(attr.name, ":").concat(JSON.stringify(attr.value), ",");
+    }
+    return "{".concat(str.slice(0, -1), "}");
+  }
+  var defaultTagRE = /\{\{((?:.|\r?\n)+?)\}\}/g;
+  function gen(node) {
+    if (node.type === 1) {
+      return codegen(node);
+    } else {
+      var text = node.text;
+      if (!defaultTagRE.test(text)) {
+        return "_v(".concat(JSON.stringify(text), ")");
+      } else {
+        var tokens = [];
+        var match;
+        defaultTagRE.lastIndex = 0;
+        var lastIndex = 0;
+        while (match = defaultTagRE.exec(text)) {
+          var index = match.index; // 匹配的位置 {{  name  }} hello {{  age }}
+          if (index > lastIndex) {
+            tokens.push(JSON.stringify(text.slice(lastIndex, index)));
+          }
+          tokens.push("_s(".concat(match[1].trim(), ")"));
+          lastIndex = index + match[0].length;
+        }
+        if (lastIndex < text.length) {
+          tokens.push(JSON.stringify(text.slice(lastIndex)));
+        }
+        return "_v(".concat(tokens.join('+'), ")");
+      }
+    }
+  }
+  function genChildren(children) {
+    return children.map(function (child) {
+      return gen(child);
+    }).join(',');
+  }
+  function codegen(ast) {
+    var children = genChildren(ast.children);
+    var code = "_c('".concat(ast.tag, "',").concat(ast.attrs.length > 0 ? genProps(ast.attrs) : null).concat(ast.children.length ? ",".concat(children) : '', ")");
+    return code;
   }
   function compileToFunction(template) {
     // 1.就是将template转换成ast语法树
+    var ast = parseHTML(template);
     // 2.生成render方法（render方法执行后的返回就是虚拟dom）
-    // console.log(template)
-    parseHTML(template);
+
+    // 模板引擎的实现原理 就是 with + new Function
+
+    var code = codegen(ast);
+    code = "with(this){return ".concat(code, "}");
+    var render = new Function(code);
+    return render;
+  }
+
+  /**
+   * vue核心流程：
+   *  1.创造了响应式数据
+   *  2.将模板转换成ast语法树
+   *  3.将ast语法树转换成了render函数
+   *    --- 每次重新渲染都会用正则替换，消耗性能比较大，所以就将ast语法树转换成render函数
+   *  4.后续每次数据更新可以只执行render函数，无需再次执行ast转换的过程
+   *  5.render函数会去产生虚拟节点（使用响应式数据）
+   *    --- 每次更新，就会调用render函数
+   *  6.根据生成的虚拟节点创造真实的DOM
+   */
+
+  function initLifeCycle(Vue) {
+    Vue.prototype._update = function () {
+      console.log('_update');
+    };
+    Vue.prototype._reder = function () {
+      console.log('reder');
+    };
+  }
+  function mountComponent(vm, el) {
+    // 1.调用render犯法产生虚拟节点 虚拟DOM
+    vm._update(vm._reder()); // vm.$option.render() 虚拟节点
+
+    // 2.根据虚拟DOM产生真实DOM
+
+    // 3.插入到el元素中
   }
 
   function initMixin(Vue) {
@@ -328,7 +466,8 @@
         }
       }
 
-      opts.render;
+      console.log(opts.render);
+      mountComponent(vm); // 组件的挂载
 
       // script标签引用的vue.global.js这个编译过程是在浏览器运行的
       // runtime是不包括模板编译的，整个编译是打包的时候通过loader来转移.vue文件的
@@ -340,6 +479,7 @@
     this._init(options);
   }
   initMixin(Vue);
+  initLifeCycle(Vue);
 
   return Vue;
 

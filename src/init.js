@@ -1,5 +1,6 @@
 import {initState} from './state'
 import {compileToFunction} from './compiler/index'
+import { mountComponent } from './lifecycle'
 
 export function initMixin(Vue) {
   Vue.prototype._init = function(options) {
@@ -33,7 +34,8 @@ export function initMixin(Vue) {
         opts.render = render  // jsx最终会被编译成h('xxx')
       }
     }
-    opts.render
+    console.log(opts.render)
+    mountComponent(vm, el);  // 组件的挂载
 
     // script标签引用的vue.global.js这个编译过程是在浏览器运行的
     // runtime是不包括模板编译的，整个编译是打包的时候通过loader来转移.vue文件的
