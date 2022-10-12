@@ -5,15 +5,15 @@ class Observer {
     // Object.defineProperty只能劫持已经存在的属性，新增删除的属性并不能劫持到
     // 对此，vue2里面会单独进行处理 $set $delete
 
-    data.__ob__ = this; // 给数据加了一个标识，如果数据上有__ob__，则说明这个属性被观测过
+    data.__ob__ = this // 给数据加了一个标识，如果数据上有__ob__，则说明这个属性被观测过
     Object.defineProperty(data, '__ob__', {
       value: this,
-      enumerable: false // 将 __ob__ 变成不可枚举（循环的时候无法获取到）
+      enumerable: false, // 将 __ob__ 变成不可枚举（循环的时候无法获取到）
     })
-    if(Array.isArray(data)) {
+    if (Array.isArray(data)) {
       data.__proto__ = newArrayProto
       this.observeArray(data) // 如果数组中放的是对象，可以监控到对象的变化
-    }else {
+    } else {
       this.walk(data)
     }
   }
@@ -21,11 +21,11 @@ class Observer {
   // 循环对象，对属性依此进行劫持
   walk(data) {
     // 重新定义属性
-    Object.keys(data).forEach(key => defineReactive(data, key, data[key]))
+    Object.keys(data).forEach((key) => defineReactive(data, key, data[key]))
   }
   // 观测数组
   observeArray(data) {
-    data.forEach(item => observe(item))
+    data.forEach((item) => observe(item))
   }
 }
 
@@ -33,14 +33,13 @@ export function defineReactive(target, key, value) {
   observe(value) // 对所有的对象都进行劫持
   Object.defineProperty(target, key, {
     get() {
-      console.log('key', key)
       return value
     },
     set(newValue) {
-      if(newValue === value) return
+      if (newValue === value) return
       observe(newValue) // 修改的值如果是对象，就重新进行劫持
       value = newValue
-    }
+    },
   })
 }
 
@@ -48,11 +47,12 @@ export function defineReactive(target, key, value) {
 export function observe(data) {
   // console.log(data)
 
-  if(typeof data !== 'object' || data === null) {
+  if (typeof data !== 'object' || data === null) {
     return // 只对对象进行劫持
   }
 
-  if(data.__ob__ instanceof Observer) { // 说明这个对象被代理过了
+  if (data.__ob__ instanceof Observer) {
+    // 说明这个对象被代理过了
     return data.__ob__
   }
 

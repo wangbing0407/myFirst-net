@@ -28,7 +28,13 @@
             }
         })
         vm.$mount('#app')
-        console.log(vm)
+        
+        setTimeout(() => {
+          vm.name = 'he'
+          vm.age = 10
+
+          vm._update(vm._render())
+        },1000)
 
         // 1.模板引擎  性能差、需要进行正则匹配替换，vue1.0的时候还没有引入虚拟dom的概念
         // 2.vue2采用虚拟DOM，数据变化后比较虚拟dom的差异，最后更新需要更新的地方

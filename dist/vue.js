@@ -160,7 +160,6 @@
     observe(value); // 对所有的对象都进行劫持
     Object.defineProperty(target, key, {
       get: function get() {
-        console.log('key', key);
         return value;
       },
       set: function set(newValue) {
@@ -403,29 +402,105 @@
     return render;
   }
 
-  /**
-   * vue核心流程：
-   *  1.创造了响应式数据
-   *  2.将模板转换成ast语法树
-   *  3.将ast语法树转换成了render函数
-   *    --- 每次重新渲染都会用正则替换，消耗性能比较大，所以就将ast语法树转换成render函数
-   *  4.后续每次数据更新可以只执行render函数，无需再次执行ast转换的过程
-   *  5.render函数会去产生虚拟节点（使用响应式数据）
-   *    --- 每次更新，就会调用render函数
-   *  6.根据生成的虚拟节点创造真实的DOM
-   */
+  function createElementVNode(vm, tag) {
+    var data = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    data = data == null ? {} : data;
+    var key = data.key;
+    if (key) {
+      delete data.key;
+    }
+    for (var _len = arguments.length, children = new Array(_len > 3 ? _len - 3 : 0), _key = 3; _key < _len; _key++) {
+      children[_key - 3] = arguments[_key];
+    }
+    return vnode(vm, tag, key, data, children);
+  }
+  function createTextVNode(vm, text) {
+    return vnode(vm, undefined, undefined, undefined, undefined, text);
+  }
 
-  function initLifeCycle(Vue) {
-    Vue.prototype._update = function () {
-      console.log('_update');
-    };
-    Vue.prototype._reder = function () {
-      console.log('reder');
+  // ast做的是语法层面的转换，它描述的是语法本身
+  // 虚拟DOM，描述的是dom元素，可以增加自定义属性
+  function vnode(vm, tag, key, props, children, text) {
+    return {
+      vm: vm,
+      tag: tag,
+      key: key,
+      props: props,
+      children: children,
+      text: text
     };
   }
+
+  function createElm(vnode) {
+    var tag = vnode.tag,
+      data = vnode.data,
+      children = vnode.children,
+      text = vnode.text;
+    if (typeof tag === 'string') {
+      // 这里将真实节点和虚拟节点对应起来，后续如果修改属性了，会进行diff对比
+      vnode.el = document.createElement(tag);
+      patchProps(vnode.el, data);
+      children.forEach(function (child) {
+        vnode.el.appendChild(createElm(child));
+      });
+    } else {
+      vnode.el = document.createTextNode(text);
+    }
+    return vnode.el;
+  }
+  function patchProps(el, props) {
+    for (var key in props) {
+      if (key === 'style') {
+        // style{color: "red"}
+        for (var styleName in props.style) {
+          el.style[styleName] = props.style[styleName];
+        }
+      } else {
+        el.setAttribute(key, props[key]);
+      }
+    }
+  }
+  function patch(oldVNode, vnode) {
+    // 初步渲染流程
+    var isRealElement = oldVNode.nodeType;
+    if (isRealElement) {
+      var elm = oldVNode; // 获取真实元素
+      var parentElm = elm.parentNode; // 拿到父元素
+      var newElm = createElm(vnode);
+      parentElm.insertBefore(newElm, elm.nextSibling);
+      parentElm.removeChild(elm);
+      return newElm;
+    }
+  }
+  function initLifeCycle(Vue) {
+    // 将虚拟dom(vnode)转换成真实dom
+    Vue.prototype._update = function (vnode) {
+      var vm = this;
+      var el = this.$el;
+      console.log('_update', vnode, el);
+      // patch既有初始化的功能，又有更新的功能
+      vm.$el = patch(el, vnode);
+    };
+    Vue.prototype._c = function () {
+      return createElementVNode.apply(void 0, [this].concat(Array.prototype.slice.call(arguments)));
+    };
+    Vue.prototype._v = function () {
+      return createTextVNode.apply(void 0, [this].concat(Array.prototype.slice.call(arguments)));
+    };
+    Vue.prototype._s = function (value) {
+      if (_typeof(value) !== 'object') return value;
+      return JSON.stringify(value);
+    };
+    Vue.prototype._render = function () {
+      // 当渲染的时候会去实例中取值，我们就可以将属性和视图绑定在一起
+      return this.$options.render.call(this); // 通过ast语法转义
+    };
+  }
+
   function mountComponent(vm, el) {
-    // 1.调用render犯法产生虚拟节点 虚拟DOM
-    vm._update(vm._reder()); // vm.$option.render() 虚拟节点
+    vm.$el = el;
+    // 1.调用render方法产生虚拟节点 虚拟DOM
+    vm._update(vm._render()); // vm.$option.render() 虚拟节点
 
     // 2.根据虚拟DOM产生真实DOM
 
@@ -466,8 +541,7 @@
         }
       }
 
-      console.log(opts.render);
-      mountComponent(vm); // 组件的挂载
+      mountComponent(vm, el); // 组件的挂载
 
       // script标签引用的vue.global.js这个编译过程是在浏览器运行的
       // runtime是不包括模板编译的，整个编译是打包的时候通过loader来转移.vue文件的
