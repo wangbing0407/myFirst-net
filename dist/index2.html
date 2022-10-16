@@ -8,9 +8,7 @@
 </head>
 <body>
     <div id="app" style="color: red">
-        <div style="color: red">
-            {{  name  }} hello {{ age }}  hello
-        </div>
+            {{  name  }} {{ age }}  {{  name  }}
         <span> world  </span>
     </div>
     <script src="./vue.js"></script>
@@ -29,13 +27,7 @@
         })
         vm.$mount('#app')
         
-        setTimeout(() => {
-          vm.name = 'he'
-          vm.age = 10
-
-          vm._update(vm._render())
-        },1000)
-
+        
         // 1.模板引擎  性能差、需要进行正则匹配替换，vue1.0的时候还没有引入虚拟dom的概念
         // 2.vue2采用虚拟DOM，数据变化后比较虚拟dom的差异，最后更新需要更新的地方
         // 3.核心就行要将模板变为js语法，通过js语法生成虚拟dom

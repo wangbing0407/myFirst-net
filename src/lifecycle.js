@@ -10,6 +10,7 @@
  *  6.根据生成的虚拟节点创造真实的DOM
  */
 
+import Watcher from './observe/watcher'
 import { createElementVNode, createTextVNode } from './vnode/index'
 
 function createElm(vnode) {
@@ -84,7 +85,12 @@ export function initLifeCycle(Vue) {
 export function mountComponent(vm, el) {
   vm.$el = el
   // 1.调用render方法产生虚拟节点 虚拟DOM
-  vm._update(vm._render()) // vm.$option.render() 虚拟节点
+  const updateComponent = () => {
+    vm._update(vm._render()) // vm.$option.render() 虚拟节点
+  }
+
+  const watcher = new Watcher(vm, updateComponent, true) // true用来标识是一个渲染watcher
+  console.log(watcher)
 
   // 2.根据虚拟DOM产生真实DOM
 
