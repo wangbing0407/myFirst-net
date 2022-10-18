@@ -3,6 +3,9 @@ import Dep from './dep'
 
 class Observer {
   constructor(data) {
+    // 给每个对象都增加依赖收集功能
+    this.dep = new Dep()
+
     // Object.defineProperty只能劫持已经存在的属性，新增删除的属性并不能劫持到
     // 对此，vue2里面会单独进行处理 $set $delete
 
@@ -31,12 +34,18 @@ class Observer {
 }
 
 export function defineReactive(target, key, value) {
-  observe(value) // 对所有的对象都进行劫持
+  let childOb = observe(value) // 对所有的对象都进行劫持
   let dep = new Dep() // 每个属性都有一个dep
   Object.defineProperty(target, key, {
     get() {
       if (Dep.target) {
         dep.depend() // 让这个属性的收集器记住当前的watcher
+        if (childOb) {
+          childOb.dep.depend() // 让数组和对象本身也实现依赖收集
+          if (Array.isArray(value)) {
+            dependArray(value)
+          }
+        }
       }
       return value
     },
@@ -66,4 +75,15 @@ export function observe(data) {
   // 要判断一个对象是否被劫持过，可以添加一个实例，用实例来判断是否被劫持欧
 
   return new Observer(data)
+}
+
+// 深层次嵌套会触发递归，递归多了性能就会差，不存在的属性监控不到，存在的属性要重写方法
+function dependArray(value) {
+  for (let i = 0; i < value.length; i++) {
+    let current = value[i]
+    current.__ob__ && current.__ob__.dep.depend()
+    if (Array.isArray(current)) {
+      dependArray(current)
+    }
+  }
 }
