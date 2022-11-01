@@ -4,7 +4,7 @@
  * 要做到局部更新的一个关键点，就是要利用每个组件独立的watcher
  */
 
-import Dep from './dep'
+import Dep, { popTarget, pushTarget } from './dep'
 
 let id = 0
 
@@ -18,7 +18,11 @@ class Watcher {
     this.getter = fn
     this.deps = [] // 后续我们实现计算属性，和一些清理工作(组件卸载)需要用到
     this.depsId = new Set()
-    this.get()
+    this.lazy = option.lazy
+    this.dirty = this.lazy // 缓存值
+    this.vm = vm
+
+    this.lazy ? undefined : this.get()
   }
   // 一个组件对应多个属性，重复的不用记录
   addDep(dep) {
@@ -30,15 +34,36 @@ class Watcher {
     }
   }
 
+  evaluate() {
+    this.value = this.get()
+    this.dirty = false
+  }
+
+  depend() {
+    // watcher记住dep
+    let i = this.deps.length
+
+    while (i--) {
+      // dep.depend
+      this.deps[i].depend()
+    }
+  }
+
   get() {
-    Dep.target = this
-    this.getter() // 会去vm上取值
-    Dep.target = null
+    pushTarget(this)
+    let value = this.getter.call(this.vm) // 会去vm上取值
+    popTarget()
+    return value
   }
 
   update() {
-    queunWatcher(this)
-    // this.get()
+    if (this.lazy) {
+      // 如果是计算属性，依赖的值变化了，就标识计算属性是脏值了
+      this.dirty = true
+    } else {
+      queunWatcher(this)
+      // this.get()
+    }
   }
 
   run() {
