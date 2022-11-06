@@ -12,17 +12,25 @@ let id = 0
 // 每个属性都有一个dep（属性就是被观察者），watcher就是观察者(属性变化了会通知观察者来更新)
 // 观察者模式
 class Watcher {
-  constructor(vm, fn, option) {
+  constructor(vm, exprOrFn, option, cb) {
     this.id = id++
     this.renderWatcher = option // 是一个渲染watcher
-    this.getter = fn
+    if (typeof exprOrFn === 'string') {
+      this.getter = function () {
+        return vm[exprOrFn]
+      }
+    } else {
+      this.getter = exprOrFn
+    }
     this.deps = [] // 后续我们实现计算属性，和一些清理工作(组件卸载)需要用到
     this.depsId = new Set()
     this.lazy = option.lazy
+    this.cb = cb
     this.dirty = this.lazy // 缓存值
     this.vm = vm
+    this.user = option.user // 表示是否是用户自己的watcher
 
-    this.lazy ? undefined : this.get()
+    this.value = this.lazy ? undefined : this.get()
   }
   // 一个组件对应多个属性，重复的不用记录
   addDep(dep) {
@@ -67,7 +75,12 @@ class Watcher {
   }
 
   run() {
-    this.get()
+    let oldValue = this.value
+    let newValue = this.get()
+    // this.get() // 渲染的时候用的是最新的vm来渲染的
+    if (this.user) {
+      this.cb.call(this.vm, newValue, oldValue)
+    }
   }
 }
 

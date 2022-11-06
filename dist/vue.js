@@ -266,17 +266,26 @@
   // 每个属性都有一个dep（属性就是被观察者），watcher就是观察者(属性变化了会通知观察者来更新)
   // 观察者模式
   var Watcher = /*#__PURE__*/function () {
-    function Watcher(vm, fn, option) {
+    function Watcher(vm, exprOrFn, option, cb) {
       _classCallCheck(this, Watcher);
       this.id = id++;
       this.renderWatcher = option; // 是一个渲染watcher
-      this.getter = fn;
+      if (typeof exprOrFn === 'string') {
+        this.getter = function () {
+          return vm[exprOrFn];
+        };
+      } else {
+        this.getter = exprOrFn;
+      }
       this.deps = []; // 后续我们实现计算属性，和一些清理工作(组件卸载)需要用到
       this.depsId = new Set();
       this.lazy = option.lazy;
+      this.cb = cb;
       this.dirty = this.lazy; // 缓存值
       this.vm = vm;
-      this.lazy ? undefined : this.get();
+      this.user = option.user; // 表示是否是用户自己的watcher
+
+      this.value = this.lazy ? undefined : this.get();
     }
     // 一个组件对应多个属性，重复的不用记录
     _createClass(Watcher, [{
@@ -327,7 +336,12 @@
     }, {
       key: "run",
       value: function run() {
-        this.get();
+        var oldValue = this.value;
+        var newValue = this.get();
+        // this.get() // 渲染的时候用的是最新的vm来渲染的
+        if (this.user) {
+          this.cb.call(this.vm, newValue, oldValue);
+        }
       }
     }]);
     return Watcher;
@@ -413,6 +427,28 @@
     if (opts.computed) {
       initComputed(vm);
     }
+    if (opts.watch) {
+      initWatch(vm);
+    }
+  }
+  function initWatch(vm) {
+    var watch = vm.$options.watch;
+    for (var key in watch) {
+      var handler = watch[key];
+      if (Array.isArray(handler)) {
+        for (var i = 0; i < handler.length; i++) {
+          createWatcher(vm, key, handler[i]);
+        }
+      } else {
+        createWatcher(vm, key, handler);
+      }
+    }
+  }
+  function createWatcher(vm, key, handler) {
+    if (typeof handler === 'string') {
+      handler = vm[handler];
+    }
+    return vm.$watch(key, handler);
   }
   function proxy(vm, target, key) {
     Object.defineProperty(vm, key, {
@@ -473,6 +509,16 @@
         watcher.depend();
       }
       return watcher.value; // 最后返回的是watcher上的值
+    };
+  }
+
+  function initStateMixin(Vue) {
+    Vue.prototype.$nextTick = nextTick;
+    Vue.prototype.$watch = function (exprOrFn, cb) {
+      // firstname的值变化了，直接执行cb函数即可
+      new Watcher(this, exprOrFn, {
+        user: true
+      }, cb);
     };
   }
 
@@ -730,6 +776,7 @@
       return newElm;
     }
   }
+
   function initLifeCycle(Vue) {
     // 将虚拟dom(vnode)转换成真实dom
     Vue.prototype._update = function (vnode) {
@@ -815,9 +862,9 @@
   function Vue(options) {
     this._init(options);
   }
-  Vue.prototype.$nextTick = nextTick;
   initMixin(Vue);
   initLifeCycle(Vue);
+  initStateMixin(Vue);
 
   return Vue;
 

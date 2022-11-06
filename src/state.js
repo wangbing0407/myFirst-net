@@ -1,6 +1,6 @@
 import Dep from './observe/dep'
 import { observe } from './observe/index'
-import Watcher from './observe/watcher'
+import Watcher, { nextTick } from './observe/watcher'
 
 export function initState(vm) {
   const opts = vm.$options
@@ -10,6 +10,30 @@ export function initState(vm) {
   if (opts.computed) {
     initComputed(vm)
   }
+  if (opts.watch) {
+    initWatch(vm)
+  }
+}
+
+function initWatch(vm) {
+  let watch = vm.$options.watch
+  for (let key in watch) {
+    const handler = watch[key]
+    if (Array.isArray(handler)) {
+      for (let i = 0; i < handler.length; i++) {
+        createWatcher(vm, key, handler[i])
+      }
+    } else {
+      createWatcher(vm, key, handler)
+    }
+  }
+}
+
+function createWatcher(vm, key, handler) {
+  if (typeof handler === 'string') {
+    handler = vm[handler]
+  }
+  return vm.$watch(key, handler)
 }
 
 function proxy(vm, target, key) {
@@ -74,5 +98,13 @@ function createComputedGetter(key) {
       watcher.depend()
     }
     return watcher.value // 最后返回的是watcher上的值
+  }
+}
+
+export function initStateMixin(Vue) {
+  Vue.prototype.$nextTick = nextTick
+  Vue.prototype.$watch = function (exprOrFn, cb, option = {}) {
+    // firstname的值变化了，直接执行cb函数即可
+    new Watcher(this, exprOrFn, { user: true }, cb)
   }
 }
