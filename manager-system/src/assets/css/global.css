@@ -1,0 +1,20 @@
+/* 表格统一样式 */
+.el-table .el-table__header-wrapper thead th,
+.el-table .el-table__fixed-header-wrapper thead th {
+  padding: 0;
+  background-color: #F9F9F9;
+  height: 50px;
+  line-height: 40px;
+  color: #283543;
+}
+/* 滚动条样式优化 */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+  background: #cccccc;
+  border-radius: 4px;
+}
+/* 主内容设置 */
+.content {
+  margin: 20px 0px;
+}
