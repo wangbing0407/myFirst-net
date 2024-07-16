@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
-import './assets/css/global.css'
+// import './assets/css/global.css'
 // 导入 ElementUI
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
@@ -11,6 +11,7 @@ import 'font-awesome/css/font-awesome.min.css'
 import * as echarts from 'echarts'
 // 引入 axios
 import axios from 'axios'
+import '@/styles/index.scss' // global css
 // 将 axios 挂载到 Vue 上
 Vue.prototype.$axios = axios
 Vue.config.productionTip = false

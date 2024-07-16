@@ -1,0 +1,11 @@
+ // 整个滚动条--可以设置滚动区背景色
+ ::-webkit-scrollbar {
+  width: 8px; //纵向滚动条的宽度
+  height: 8px; //横向滚动条的高度
+}
+//滚动条滑块
+::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  background: rgb(221, 222, 224);
+  transition: 0.3s ease-in-out;
+}

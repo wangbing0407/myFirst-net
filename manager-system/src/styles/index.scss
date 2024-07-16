@@ -1,0 +1,21 @@
+@import "./scrollbar.scss";
+
+body {
+  height: 100%;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB,
+    Microsoft YaHei, Arial, sans-serif;
+}
+
+.el-table th.is-leaf,.el-table th.is-center {
+  background: #ebebef !important;
+  border-left: 1px solid #fbf9f9 !important;
+  border-bottom: 1px solid #fbf9f9 !important;
+}
+
+/* 主内容设置 */
+.content {
+  margin: 20px 0px;
+}
