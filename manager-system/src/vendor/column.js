@@ -13,10 +13,6 @@ const columns = [
     prop: 'selection',
   },
   {
-    label: '目录层级位置',
-    prop: 'directoryLevelLocation',
-  },
-  {
     label: '接口名称',
     prop: 'interfaceName',
   },

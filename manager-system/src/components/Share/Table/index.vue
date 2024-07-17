@@ -64,6 +64,9 @@
         <template slot-scope="scope" v-if="item.type !== 'selection'">
           <a v-if="item.type == 'link'" href="javascript:void(0)"
             @click="handleJump(scope)">{{scope.row[item.prop]}}</a>
+          <span v-else-if="item.type == 'showIcon'">
+            {{scope.row[item.prop]}}<i class="el-icon-open icon-position" @click="handleShowGragh(scope)"></i>
+          </span>
           <span
             v-else-if="item.type === 'select' || item.type === 'format'">{{ getOptionsByType(scope.row[item.prop],item.prop) }}</span>
           <span v-else>{{ scope.row[item.prop] }}</span>
@@ -164,6 +167,9 @@ export default {
     handleJump(e) {
       this.$emit('handleJump', e)
     },
+    handleShowGragh(e) {
+      this.$emit('handleShowGragh', e)
+    },
     handleImport(event) {
       this.$emit('handleImport', event)
     },
@@ -230,6 +236,12 @@ export default {
       color: #409EFF;
       border-color: #c6e2ff;
       background-color: #ecf5ff;
+    }
+  }
+  .icon-position {
+    padding-left: 5px;
+    &:hover {
+      cursor: pointer;
     }
   }
 }
