@@ -11,6 +11,11 @@
               <el-option v-for="item in getOptions(col)" :key="item.key" :label="item.CNLabel" :value="item.key">
               </el-option>
             </el-select>
+            <el-upload v-else-if="col.type === 'upload'" ref="upload" action=""
+              :auto-upload="false" :limit="1" :on-change="handleChange" :file-list="fileList"
+              :show-file-list="true">
+              <el-button slot="trigger" type="primary" size="mini" icon="el-icon-plus">附件上传</el-button>
+            </el-upload>
             <div class="block" v-else-if="col.type === 'cascader'  &&  col.edit">
               <el-cascader :props="obj" clearable v-model="data[col.prop]" :placeholder="data.fjDisplay" :disabled="col.disable" :class="{'process-cascaders':data.fjDisplay}"></el-cascader>
             </div>
@@ -28,6 +33,7 @@
 
 <script>
 import * as Config from '@/vendor/config'
+import * as Utils from '@/vendor/utils'
 export default {
   name: 'Information',
   components: {
@@ -51,6 +57,8 @@ export default {
       selectYN: [],
       rules: {},
       obj: {},
+      file: {},
+      fileList: [],
     }
   },
   created() {
@@ -85,6 +93,12 @@ export default {
           this.rules[r.prop] = [obj]
         }
       })
+    },
+    handleChange(file, fileList) {
+      this.file = file
+      this.fileList = fileList
+      if (this.file.raw) this.file.raw.time = Utils.formatTime(new Date())
+      this.$emit('handleFormUpliadFile', this.file.raw)
     },
     // 获取静态配置
     getOptions(col) {

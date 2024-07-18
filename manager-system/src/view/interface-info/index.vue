@@ -4,7 +4,7 @@
       @handlePagerChange="handlePagerChange" @handleBtnEmit="handleBtnEmit" @handleShowGragh="handleShowGragh" />
     <!-- 新增&编辑 弹出框 -->
     <el-dialog :visible.sync="dialogVisible" width="55%" :before-close="handleClose">
-      <Form :props="config.modules.form" :data="formData" />
+      <Form :props="config.modules.form" :data="formData" @handleFormUpliadFile="handleFormUpliadFile" />
       <span slot="footer" class="dialog-footer">
         <el-button @click="handleCancel">取消</el-button>
         <el-button type="primary" @click="handleConfirm">确认</el-button>
@@ -83,6 +83,9 @@ export default {
     handleShowGragh(scope) {
       this.graphData = scope.row
       this.visibleGraph = true
+    },
+    handleFormUpliadFile(fileRaw) {
+      debugger
     },
     handleCancel() {
       this.dialogVisible = false

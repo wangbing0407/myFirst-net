@@ -22,7 +22,7 @@ export default {
         getColumn({ label: '修改人', type: 'input', span: 12}),
         getColumn({ label: '修改时间', type: 'input', span: 12}),
         getColumn({ label: '修改原因', type: 'input', span: 12}),
-        getColumn({ label: '接口附件', type: 'input', span: 12}),
+        getColumn({ label: '接口附件', type: 'upload', span: 24}),
       ],
     },
     table: {
