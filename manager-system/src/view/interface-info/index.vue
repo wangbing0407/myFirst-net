@@ -4,10 +4,10 @@
       @handlePagerChange="handlePagerChange" @handleBtnEmit="handleBtnEmit" @handleShowGragh="handleShowGragh" />
     <!-- 新增&编辑 弹出框 -->
     <el-dialog :visible.sync="dialogVisible" width="55%" :before-close="handleClose">
-      <Form :props="config.modules.form" :data="formData" @handleFormUpliadFile="handleFormUpliadFile" />
+      <Form :props="formConfig" :data="formData" @handleFormUpliadFile="handleFormUpliadFile" />
       <span slot="footer" class="dialog-footer">
-        <el-button @click="handleCancel">取消</el-button>
-        <el-button type="primary" @click="handleConfirm">确认</el-button>
+        <el-button size="small" @click="handleCancel">取消</el-button>
+        <el-button type="primary" size="small" @click="handleConfirm">确认</el-button>
       </span>
     </el-dialog>
     <!-- 指向关系图 弹出框 -->
@@ -34,6 +34,7 @@ export default {
   data() {
     return {
       config: config,
+      formConfig: config.modules.form,
       tableData: [],
       formData: {},
       pager:{
@@ -55,6 +56,7 @@ export default {
     // 按钮处理
     handleBtnEmit(btnName, selectData) {
       if (btnName === 'add') {
+        this.formConfig = this.config.modules.form
         this.dialogVisible = true
       }
       if (btnName === 'edit') {
@@ -62,6 +64,7 @@ export default {
           Utils.messageBox(this, '请选择数据')
           return
         }
+        this.formConfig = this.config.modules.form2
         this.dialogVisible = true
       }
       if (btnName === 'delete') {

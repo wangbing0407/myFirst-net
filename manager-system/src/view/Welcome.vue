@@ -5,7 +5,7 @@
       <el-card class="info">
         <el-button type="primary" icon="el-icon-user-solid" circle />
         <h2 class="num-info">112356</h2>
-        <p class="desc">总用户数</p>
+        <p class="desc">总接口数</p>
       </el-card>
       <el-card class="info">
         <el-button type="success" icon="el-icon-s-data" circle />

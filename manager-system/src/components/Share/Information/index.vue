@@ -4,8 +4,8 @@
       <el-row :gutter="(props.gutter || props.gutter === 0) ? props.gutter : 20" :class="{'flex-info':props.flexInfo}">
         <el-col v-for="col in props.columns" :key="col.label" :span="col.span">
           <el-form-item :label="`${col.label}：`" :prop="col.prop" :label-width="col.labelWidth">
-            <el-input v-if="col.type === 'input' &&  col.edit" v-model="data[col.prop]" size="mini"
-              :disabled="col.disable" placeholder="请输入内容"></el-input>
+            <el-input v-if="(col.type === 'input' || col.type === 'textarea') &&  col.edit" v-model="data[col.prop]" size="mini" :maxlength="col.max"
+              :type="col.type" :disabled="col.disable" :placeholder="col.placeholder ? col.placeholder : '请输入内容'"></el-input>
             <el-select v-else-if="col.type === 'select' && col.edit" size="mini" clearable v-model="data[col.prop]"
               placeholder="请选择" :disabled="col.disable">
               <el-option v-for="item in getOptions(col)" :key="item.key" :label="item.CNLabel" :value="item.key">

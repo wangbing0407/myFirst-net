@@ -3,25 +3,48 @@ import getColumn from '@/vendor/column'
 export default {
   modules: {
     form: {
-      title: '参考信息区域',
       labelWidth: '160',
       labelPosition: 'left',
       columns: [
-        getColumn({ label: '接口名称', type: '', span: 12}),
-        getColumn({ label: 'PO接口地址', type: '', span: 12}),
-        getColumn({ label: '所属系统', type: '', span: 12}),
-        getColumn({ label: '所属模块', type: '', span: 12}),
-        getColumn({ label: '接口描述', type: 'input', span: 12}),
-        getColumn({ label: '集成方向', type: 'input', span: 12}),
-        getColumn({ label: '涉及系统', type: 'input', span: 12}),
-        getColumn({ label: '关联项目', type: 'input', span: 12}),
-        getColumn({ label: '对接人', type: 'input', span: 12}),
-        getColumn({ label: '系统版本', type: 'input', span: 12}),
-        getColumn({ label: '创建人', type: 'input', span: 12}),
-        getColumn({ label: '创建时间', type: 'input', span: 12}),
-        getColumn({ label: '修改人', type: 'input', span: 12}),
-        getColumn({ label: '修改时间', type: 'input', span: 12}),
-        getColumn({ label: '修改原因', type: 'input', span: 12}),
+        getColumn({ label: '接口名称', type: 'input', span: 12}), // 编辑时不能填
+        getColumn({ label: 'PO接口地址', type: 'input', span: 12}),// 编辑时不能填
+        getColumn({ label: '所属系统', type: 'select', span: 12, placeholder: ''}),// 编辑时不能填
+        getColumn({ label: '所属模块', type: 'input', span: 12, placeholder: '比如：用服、变式'}),// 编辑时不能填 
+        getColumn({ label: '接口描述', type: 'input', span: 12, placeholder: '概括接口的核心功能'}),
+        getColumn({ label: '关联项目', type: 'input', span: 12, placeholder: '比如：用服项目新增接口'}),
+        getColumn({ label: '对接人', type: 'input', span: 12,  placeholder: '比如：袁涛 50262180'}),
+        // getColumn({ label: '系统版本', type: '', span: 12}),
+        // getColumn({ label: '创建人', type: '', span: 12}),
+        // getColumn({ label: '创建时间', type: '', span: 12}),
+        // getColumn({ label: '修改人', type: '', span: 12}),
+        // getColumn({ label: '修改时间', type: '', span: 12}),
+        getColumn({ label: '修改原因', type: 'textarea', span: 24}),
+        getColumn({ label: '涉及系统-上游', type: 'select', span: 8}),
+        getColumn({ label: '集成方向', type: 'select', span: 8}),
+        getColumn({ label: '涉及系统-下游', type: 'select', span: 8}),
+        getColumn({ label: '接口附件', type: 'upload', span: 24}),
+      ],
+    },
+    form2: {
+      labelWidth: '160',
+      labelPosition: 'left',
+      columns: [
+        getColumn({ label: '接口名称', type: '', span: 12}), // 编辑时不能填
+        getColumn({ label: 'PO接口地址', type: '', span: 12}),// 编辑时不能填
+        getColumn({ label: '所属系统', type: '', span: 12}),// 编辑时不能填
+        getColumn({ label: '所属模块', type: '', span: 12, placeholder: '比如：用服、变式'}),// 编辑时不能填 
+        getColumn({ label: '系统版本', type: '', span: 12}),
+        getColumn({ label: '创建人', type: '', span: 12}),
+        getColumn({ label: '创建时间', type: '', span: 12}),
+        getColumn({ label: '修改人', type: '', span: 12}),
+        getColumn({ label: '修改时间', type: '', span: 12}),
+        getColumn({ label: '接口描述', type: 'input', span: 12, placeholder: '概括接口的核心功能'}),
+        getColumn({ label: '关联项目', type: 'input', span: 12, placeholder: '比如：用服项目新增接口'}),
+        getColumn({ label: '对接人', type: 'input', span: 12,  placeholder: '比如：袁涛 50262180'}),
+        getColumn({ label: '修改原因', type: 'textarea', span: 24}),
+        getColumn({ label: '涉及系统-上游', type: 'select', span: 8}),
+        getColumn({ label: '集成方向', type: 'select', span: 8}),
+        getColumn({ label: '涉及系统-下游', type: 'select', span: 8}),
         getColumn({ label: '接口附件', type: 'upload', span: 24}),
       ],
     },

@@ -37,8 +37,12 @@ const columns = [
     prop: 'integrationDirection',
   },
   {
-    label: '涉及系统',
+    label: '涉及系统-上游',
     prop: 'involvingSystems',
+  },
+  {
+    label: '涉及系统-下游',
+    prop: 'involvingSystems2',
   },
   {
     label: '关联项目',
@@ -100,7 +104,9 @@ export default function ({
   edit = true,
   hide = false,
   max,
+  maxlength,
   showOverflow = true, // table中内容超出是否显示省略号并提示tip
+  placeholder,
 }) {
   let column = Object.assign(
     {},
@@ -117,7 +123,9 @@ export default function ({
   column.required = required || column.required
   column.edit = edit || column.edit
   column.max = max || column.max
+  column.maxlength = maxlength || column.maxlength
   column.hide = hide || column.hide
   column.showOverflow = showOverflow || column.showOverflow
+  column.placeholder = placeholder || column.placeholder
   return column || {}
 }
