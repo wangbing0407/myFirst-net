@@ -9,11 +9,15 @@ import 'element-ui/lib/theme-chalk/index.css'
 import 'font-awesome/css/font-awesome.min.css'
 // 全局引入 echarts
 import * as echarts from 'echarts'
+// 全局引入 lodash
+import _ from 'lodash'
 // 引入 axios
 import axios from 'axios'
 import '@/styles/index.scss' // global css
 // 将 axios 挂载到 Vue 上
 Vue.prototype.$axios = axios
+// 将 lodash 挂载到 Vue 上
+Vue.prototype._ = _
 Vue.config.productionTip = false
 import commonJs from '@/assets/js/common.js'
 import constant from '@/assets/js/constant.js'

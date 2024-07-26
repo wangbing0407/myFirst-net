@@ -20,6 +20,7 @@
     "echarts": "^5.3.3",
     "element-ui": "^2.15.14",
     "font-awesome": "^4.7.0",
+    "lodash": "^4.17.21",
     "node-sass": "^4.14.1",
     "relation-graph": "^2.2.2",
     "vue": "^2.6.11",
