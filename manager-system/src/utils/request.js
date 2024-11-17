@@ -1,4 +1,5 @@
 import axios from 'axios'
+import store from '@/store'
 import {
   MessageBox,
   Message
@@ -24,6 +25,7 @@ service.interceptors.request.use(
     // if (store.getters.token) {
     //   config.headers['X-Token'] = getToken()
     // }
+    config.headers['Authorization'] = store.getters.curUserInfo
     return config
   },
   error => {
