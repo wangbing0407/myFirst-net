@@ -4,13 +4,20 @@ const path = require('path')
 function resolve(dir) {
   return path.join(__dirname, dir)
 }
+let plugins = []
+if (process.env.NODE_ENV === 'production') {
+  plugins = plugins.concat([
+    // 依赖关系可视化
+    // new BundleAnalyzerPlugin(),
+  ])
+}
 const name = 'PO集成接口信息管理平台' // page title
 
 module.exports = {
   publicPath: '/',
   outputDir: './dist',
   assetsDir: 'static',
-  runtimeCompiler: true,
+  // runtimeCompiler: true,
   lintOnSave: false,
   productionSourceMap: false,
   configureWebpack: {
@@ -24,6 +31,8 @@ module.exports = {
     },
   },
   chainWebpack(config) {
+    config.plugins.delete('preload') // TODO: need test
+    config.plugins.delete('prefetch') // TODO: need test
     // set svg-sprite-loader
     config.module.rule('svg').exclude.add(resolve('src/icons')).end()
     config.module
