@@ -12,6 +12,88 @@ let config = {
       key: 'N',
     },
   ],
+  // 集成方向
+  integrationDirection: [
+    {
+      CNLabel: '->',
+      ENLabel: '->',
+      key: 'from',
+    },
+    {
+      CNLabel: '<-',
+      ENLabel: '<-',
+      key: 'to',
+    },
+  ],
+  // 所属系统
+  belongToSystem: [
+    {
+      CNLabel: 'PLM',
+      ENLabel: 'PLM',
+      key: 'PLM',
+    },
+    {
+      CNLabel: 'PBI',
+      ENLabel: 'PBI',
+      key: 'PBI',
+    },
+    {
+      CNLabel: 'IDP',
+      ENLabel: 'IDP',
+      key: 'IDP',
+    },
+    {
+      CNLabel: 'ERP',
+      ENLabel: 'ERP',
+      key: 'ERP',
+    },
+  ],
+  // 涉及系统-上游
+  involvingSystemUpper: [
+    {
+      CNLabel: 'PLM',
+      ENLabel: 'PLM',
+      key: 'PLM',
+    },
+    {
+      CNLabel: 'PBI',
+      ENLabel: 'PBI',
+      key: 'PBI',
+    },
+    {
+      CNLabel: 'IDP',
+      ENLabel: 'IDP',
+      key: 'IDP',
+    },
+    {
+      CNLabel: 'ERP',
+      ENLabel: 'ERP',
+      key: 'ERP',
+    },
+  ],
+  // 涉及系统-下游
+  involvingSystemDown: [
+    {
+      CNLabel: 'PLM',
+      ENLabel: 'PLM',
+      key: 'PLM',
+    },
+    {
+      CNLabel: 'PBI',
+      ENLabel: 'PBI',
+      key: 'PBI',
+    },
+    {
+      CNLabel: 'IDP',
+      ENLabel: 'IDP',
+      key: 'IDP',
+    },
+    {
+      CNLabel: 'ERP',
+      ENLabel: 'ERP',
+      key: 'ERP',
+    },
+  ],
 }
 let setConfig = function (object) {
   for (const key in object) {

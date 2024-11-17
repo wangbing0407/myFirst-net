@@ -20,6 +20,24 @@ module.exports = {
   // runtimeCompiler: true,
   lintOnSave: false,
   productionSourceMap: false,
+  devServer: {
+    // port: port,
+    open: false,
+    overlay: {
+      warnings: false,
+      errors: true
+    },
+    proxy: {
+      '/mindary': {
+        target: 'http://10.25.122.147',
+        // ws: true,
+        changeOrigin: true,
+        pathRewrite: {
+          ['^' + process.env.VUE_APP_BASE_API]: ''
+        }
+      },
+    },
+  },
   configureWebpack: {
     // provide the app's title in webpack's name field, so that
     // it can be accessed in index.html to inject the correct title.

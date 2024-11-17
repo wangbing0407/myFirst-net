@@ -47,6 +47,8 @@
   </div>
 </template>
 <script>
+import * as API from '@/api'
+import * as Utils from '@/vendor/utils'
 export default {
   data() {
     return {
@@ -72,26 +74,23 @@ export default {
   },
   methods: {
     submitForm(formName) {
+      // this.$router.push("/home");
+      // return
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          // this.loginLoading = true;
-          // this.$axios
-          //   .post("/auth/login", this.form)
-          //   .then((res) => {
-          //     if (res.data.success) {
-          //       sessionStorage.setItem("user",JSON.stringify(res.data.data.user));
-          //       sessionStorage.setItem("token", res.data.token);
-          //       this.$router.push("/home");
-          //     } else {
-          //       this.$message.error(res.data.msg);
-          //       this.loginLoading = false;
-          //     }
-          //   })
-          //   .catch((err) => {
-          //     this.$message.error("服务器连接失败，请稍后重试......");
-          //     this.loginLoading = false;
-          //   });
-          this.$router.push("/home");
+          let formData = new FormData()
+          formData.append('username', this.form.username)
+          formData.append('password', this.form.password)
+          API.callRequest('/mindray/user/login', formData).then(({data}) => {
+            console.log(data)
+            if (data.status) {
+              this.$store.dispatch('user/setCurUserInfo', data.data)
+              sessionStorage.setItem('USER', data.data)
+              this.$router.push("/home");
+            } else {
+              Utils.messageBox(this, data.message || '登录失败！')
+            }
+          })
         } else {
           return false;
         }

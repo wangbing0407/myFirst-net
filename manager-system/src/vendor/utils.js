@@ -56,3 +56,13 @@ export function downloadFile(config, isIntercept) {
   a.click()
   document.body.removeChild(a)
 }
+
+export function download(url, timeout = 1000) {
+  let elemIF = document.createElement("iframe");
+  elemIF.src = encodeUrl(url);
+  elemIF.style.display = "none";
+  document.body.appendChild(elemIF);
+  setTimeout(() => {
+    elemIF.remove()
+  }, timeout);
+}

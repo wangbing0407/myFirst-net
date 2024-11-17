@@ -22,15 +22,15 @@ const columns = [
   },
   {
     label: '所属系统',
-    prop: 'affiliationSystem',
+    prop: 'belongToSystem',
   },
   {
     label: '所属模块',
-    prop: 'affiliationModule',
+    prop: 'belongToModular',
   },
   {
     label: '接口描述',
-    prop: 'interfaceDescription',
+    prop: 'interfaceDes',
   },
   {
     label: '集成方向',
@@ -38,15 +38,15 @@ const columns = [
   },
   {
     label: '涉及系统-上游',
-    prop: 'involvingSystems',
+    prop: 'involvingSystemUpper',
   },
   {
     label: '涉及系统-下游',
-    prop: 'involvingSystems2',
+    prop: 'involvingSystemDown',
   },
   {
     label: '关联项目',
-    prop: 'associatedProjects',
+    prop: 'relatedProject',
   },
   {
     label: '对接人',
@@ -54,11 +54,11 @@ const columns = [
   },
   {
     label: '接口附件',
-    prop: 'interfaceAttachments',
+    prop: 'filePath',
   },
   {
     label: '系统版本',
-    prop: 'systemVersion',
+    prop: 'version',
   },
   {
     label: '创建人',
@@ -78,7 +78,11 @@ const columns = [
   },
   {
     label: '修改原因',
-    prop: 'modificationReason',
+    prop: 'changeReason',
+  },
+  {
+    label: 'version',
+    prop: 'lifeCycleState',
   },
 ]
 /**

@@ -24,7 +24,7 @@
         <div class="import-box" v-if="props.buttons && props.buttons.includes('import')">
           <i class="el-icon-upload2"></i>
           导入
-          <input type="file" ref="fileF" @change="handleImport" class="btn-import">
+          <input type="file" ref="fileF" @change="handleImport" class="btn-import" onclick="this.value='';">
         </div>
         <el-button v-if="props.buttons && props.buttons.includes('export')" size="small" icon="el-icon-download" @click="handleExport">
           导出</el-button>
