@@ -66,3 +66,44 @@ export function download(url, timeout = 1000) {
     elemIF.remove()
   }, timeout);
 }
+
+export function downLoadBlobExcel(data, excelName) {
+  const link = document.createElement('a')
+  let blob = new Blob([data], {
+      type: 'application/vnd.ms-excel'
+  });
+  link.style.display = 'none'
+  link.href = URL.createObjectURL(blob);
+  link.setAttribute('download', excelName + '.xlsx')
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+}
+
+export function downLoadBlobZip(data, zipName) {
+  const link = document.createElement('a')
+  let blob = new Blob([data], {
+      type: 'application/zip'
+  });
+  link.style.display = 'none'
+  link.href = URL.createObjectURL(blob);
+  link.setAttribute('download', zipName + '.zip')
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+}
+
+export function downloadBlob(response,suffix){
+
+  let fileName = new Date().getTime()+"_"+suffix+'.xlsx'
+  let blob = new Blob([response]);//response.data为后端传的流文件
+  let url = window.URL.createObjectURL(blob);
+  let downloadElement = document.createElement("a");
+  downloadElement.style.display = "none";
+  downloadElement.href = url;
+  downloadElement.download = fileName;
+  document.body.appendChild(downloadElement);
+  downloadElement.click();
+  document.body.removeChild(downloadElement);
+  window.URL.revokeObjectURL(url);
+}

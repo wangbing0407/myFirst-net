@@ -125,18 +125,20 @@ export default {
     },
     // 导出
     handleExport(selectData) {
-      let loading = this.$loading()
-      API.callRequest('/mindray/po/exportPOInfo', {}).then(({data}) => {
-        if (data.status) {
-          this.$message({
-            message: '导出成功！',
-            type: 'success'
-          });
-        }else {
-          this.$message.error(data.message || '导出失败！');
+      API.callRequest('/mindray/po/exportPOInfo', {}).then(result => {
+        let reader = new FileReader();
+        reader.readAsText(result, 'utf-8');
+        reader.onload = function () {
+          //失败返回JSON数据 成功返回zip包文件流
+          try {
+              const res = JSON.parse(reader.result);
+              if (res.success == false) {
+                this.$message.error(reader.message || '下载失败！');
+              }
+          } catch (error) {
+            Utils.downLoadBlobZip(result,'po文件')
+          }
         }
-      }).finally(() => {
-        loading && loading.close()
       })
     },
     getTableData() {
