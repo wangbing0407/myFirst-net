@@ -20,7 +20,7 @@
             padding-right: 10px;
             color: #999999;
           "
-          >在学课程 {{ userInfo.courseNum ? userInfo.courseNum : "2" }}</span
+          >在学课程 {{ userInfo.courseNum ? userInfo.courseNum : "3" }}</span
         >
         <span style="padding-left: 5px; color: #999999"
           >已下订单
