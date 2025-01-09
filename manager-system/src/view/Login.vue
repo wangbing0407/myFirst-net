@@ -81,7 +81,7 @@ export default {
           let formData = new FormData()
           formData.append('username', this.form.username)
           formData.append('password', this.form.password)
-          API.callRequest('/mindray/user/login', formData).then(({data}) => {
+          API.callRequest('http://localhost:8989/user/login', formData).then(({data}) => {
             console.log(data)
             if (data.status) {
               this.$store.dispatch('user/setCurUserInfo', data.data)

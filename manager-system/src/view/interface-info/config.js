@@ -9,7 +9,7 @@ export default {
         getColumn({ label: '接口名称', type: 'input', span: 12}), // 编辑时不能填
         getColumn({ label: 'PO接口地址', type: 'input', span: 12}),// 编辑时不能填
         getColumn({ label: '所属系统', type: 'select', span: 12, placeholder: ''}),// 编辑时不能填
-        getColumn({ label: '所属模块', type: 'input', span: 12, placeholder: '比如：用服、变式'}),// 编辑时不能填 
+        getColumn({ label: '所属模块', type: 'select', span: 12, placeholder: '比如：用服、变式'}),// 编辑时不能填 
         getColumn({ label: '接口描述', type: 'input', span: 12, placeholder: '概括接口的核心功能'}),
         getColumn({ label: '关联项目', type: 'input', span: 12, placeholder: '比如：用服项目新增接口'}),
         getColumn({ label: '对接人', type: 'input', span: 12,  placeholder: '比如：袁涛 50262180'}),
@@ -70,6 +70,37 @@ export default {
       ],
       buttons: ['add', 'edit', 'delete', 'import', 'export']
     },
+  },
+  formSelect: {
+    PLM: [
+      {
+        zh_CN: '变更',
+        en_US: '变更',
+        key: 'EC'
+      },
+      {
+        zh_CN: '部件',
+        en_US: '部件',
+        key: 'Part'
+      },
+      {
+        zh_CN: '文档',
+        en_US: '文档',
+        key: 'Doc'
+      }
+    ],
+    PBI: [
+      {
+        zh_CN: '总部PBI',
+        en_US: '总部PBI',
+        key: 'PBI'
+      },
+      {
+        zh_CN: '武汉PBI',
+        en_US: '武汉PBI',
+        key: 'WHPBI'
+      },
+    ]
   },
   mockData: [
     {

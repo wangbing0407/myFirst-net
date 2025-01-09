@@ -48,6 +48,34 @@ let config = {
       key: 'ERP',
     },
   ],
+  // 所属模块
+  belongToModular: [
+    {
+      CNLabel: '总部PBI',
+      ENLabel: '总部PBI',
+      key: 'PBI',
+    },
+    {
+      CNLabel: '武汉PBI',
+      ENLabel: '武汉PBI',
+      key: 'WHPBI',
+    },
+    {
+      CNLabel: '变更',
+      ENLabel: '变更',
+      key: 'EC',
+    },
+    {
+      CNLabel: '部件',
+      ENLabel: '部件',
+      key: 'Part',
+    },
+    {
+      CNLabel: '文档',
+      ENLabel: '文档',
+      key: 'Doc',
+    },
+  ],
   // 涉及系统-上游
   involvingSystemUpper: [
     {

@@ -5,7 +5,7 @@
       @handleShowGragh="handleShowGragh" />
     <!-- 新增&编辑 弹出框 -->
     <el-dialog :visible.sync="dialogVisible" width="55%" :before-close="handleClose" :destroy-on-close="true" modal :close-on-click-modal="false">
-      <Form :props="formConfig" :data="formData" @handleFormUpliadFile="handleFormUpliadFile" />
+      <Form :props="formConfig" :data="formData" @handleFormUpliadFile="handleFormUpliadFile" @handleSelectChange="handleSelectChange" />
       <span slot="footer" class="dialog-footer">
         <el-button size="small" @click="handleCancel">取消</el-button>
         <el-button type="primary" size="small" @click="handleConfirm">确认</el-button>
@@ -25,6 +25,7 @@ import Graph from '@/components/Share/Graph/index'
 import config from './config'
 import * as API from '@/api'
 import * as Utils from '@/vendor/utils'
+import * as selectConfig from '@/vendor/config'
 export default {
   name: 'interfaceInfo',
   components: {
@@ -88,7 +89,7 @@ export default {
           let form = new FormData()
           form.append('oidList', oidList)
           let loading = this.$loading()
-          API.callRequest('/mindray/po/batchDeleteByOidList', form).then(({data}) => {
+          API.callRequest('http://localhost:8989/po/batchDeleteByOidList', form).then(({data}) => {
             if (data.status) {
               this.$message({
                 message: '删除成功！',
@@ -109,7 +110,7 @@ export default {
       let form = new FormData()
       form.append('file', event.target.files[0])
       let loading = this.$loading()
-      API.callRequest('/mindray/po/importPOInfo', form).then(({data}) => {
+      API.callRequest('http://localhost:8989/po/importPOInfo', form).then(({data}) => {
         if (data.status) {
           this.$message({
             message: '导入成功！',
@@ -125,20 +126,17 @@ export default {
     },
     // 导出
     handleExport(selectData) {
-      API.callRequest('/mindray/po/exportPOInfo', {}).then(result => {
-        let reader = new FileReader();
-        reader.readAsText(result, 'utf-8');
-        reader.onload = function () {
-          //失败返回JSON数据 成功返回zip包文件流
-          try {
-              const res = JSON.parse(reader.result);
-              if (res.success == false) {
-                this.$message.error(reader.message || '下载失败！');
-              }
-          } catch (error) {
-            Utils.downLoadBlobZip(result,'po文件')
-          }
-        }
+      API.exportData().then(res=> {
+        console.log('----------------------------------------------------------', res)
+        // let fileName = (res.headers['content-disposition'].split("="))[1]
+        const link = document.createElement('a')
+        const blob = new Blob([res.data], { type: 'application/zip' })
+        link.style.display = 'none'
+        link.href = URL.createObjectURL(blob)
+        link.setAttribute('download', 'file1')
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
       })
     },
     getTableData() {
@@ -146,7 +144,7 @@ export default {
       form.append('offset', this.pager.offset)
       form.append('range', this.pager.range)
       let loading = this.$loading()
-      API.callRequest('/mindray/po/findAll', form).then(({data}) => {
+      API.callRequest('http://localhost:8989/po/findAll', form).then(({data}) => {
         this.tableData = data.dataList
         this.pager.total = data.total
       }).finally(() => {
@@ -157,11 +155,20 @@ export default {
       let form = new FormData()
       form.append('oid', selectData[0].oid)
       this.formConfig = this.config.modules.form2
-      API.callRequest('/mindray/po/findByOid', form).then(({data}) => {
+      API.callRequest('http://localhost:8989/po/findByOid', form).then(({data}) => {
         console.log('编辑获取表单信息----', data)
         this.dialogVisible = true
         this.formData = data
       })
+    },
+    handleSelectChange(data, prop) {
+      let map = {
+        'belongToModular': []
+      }
+      if (prop === 'belongToSystem') {
+        map['belongToModular'] = this.config.formSelect[data['belongToSystem']]
+        selectConfig.setConfig(map);
+      }
     },
     handleShowGragh(scope) {
       this.graphData = scope.row
@@ -183,7 +190,7 @@ export default {
       }
       let loading = this.$loading()
       if (this.btnName === 'add') {
-        API.callRequest('/mindray/po/save', form).then(({data}) => {
+        API.callRequest('http://localhost:8989/po/save', form).then(({data}) => {
           loading.close()
           if (data.status) {
             this.getTableData()
@@ -193,7 +200,7 @@ export default {
         })
       }
       if (this.btnName === 'edit') {
-        API.callRequest('/mindray/po/update', form).then(({data}) => {
+        API.callRequest('http://localhost:8989/po/update', form).then(({data}) => {
           loading.close()
           if (data.status) {
             this.getTableData()

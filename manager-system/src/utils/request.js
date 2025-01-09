@@ -39,6 +39,10 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   response => {
     const res = response.data
+    // 二进制数据直接返回
+    if (response.config.responseType === 'blob') {
+      return response
+    }
     // 集成erp接口返回的数据
     if (response.status != 200) {
       Message({

@@ -7,8 +7,8 @@
             <el-input v-if="(col.type === 'input' || col.type === 'textarea') &&  col.edit" v-model="data[col.prop]" size="mini" :maxlength="col.max"
               :type="col.type" :disabled="col.disable" :placeholder="col.placeholder ? col.placeholder : '请输入内容'"></el-input>
             <el-select v-else-if="col.type === 'select' && col.edit" size="mini" clearable v-model="data[col.prop]"
-              placeholder="请选择" :disabled="col.disable">
-              <el-option v-for="item in getOptions(col)" :key="item.key" :label="item.CNLabel" :value="item.key">
+              placeholder="请选择" :disabled="col.disable" @change="handleSelectChange(data, col.prop)">
+              <el-option v-for="item in getOptions(data, col)" :key="item.key" :label="item.CNLabel" :value="item.key">
               </el-option>
             </el-select>
             <el-upload v-else-if="col.type === 'upload'" ref="upload" action=""
@@ -100,8 +100,11 @@ export default {
       if (this.file.raw) this.file.raw.time = Utils.formatTime(new Date())
       this.$emit('handleFormUpliadFile', this.file.raw)
     },
+    handleSelectChange(data, prop) {
+      this.$emit('handleSelectChange', data, prop)
+    },
     // 获取静态配置
-    getOptions(col) {
+    getOptions(data, col) {
       if (this.selectYN.includes(col.prop)) {
         return Config.config.selectYN
       } else {
